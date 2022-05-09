@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token
   before_save   :downcase_email
   before_create :create_activation_digest
@@ -53,7 +54,11 @@ end
     UserMailer.account_activation(self).deliver_now
   end
 
-
+  # Определяет прото-ленту.
+  # Полная реализация в "Следовании за пользователями".
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
 
   private
 
